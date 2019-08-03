@@ -6,9 +6,15 @@ public class GameManagerComp : MonoBehaviour
 {
   void Update()
   {
-    bool leftClick = Input.GetMouseButtonDown(0);
-    bool rightClick = Input.GetMouseButtonDown(1);
-    if (leftClick || rightClick)
+
+    bool leftClickPressed = Input.GetMouseButtonUp(0);
+    bool rightClickPressed = Input.GetMouseButtonUp(1);
+    bool leftClickHeld = Input.GetMouseButton(0);
+    bool rightClickHeld = Input.GetMouseButton(1);
+
+    bool bothPressed = (leftClickPressed && rightClickHeld) || (rightClickPressed && leftClickHeld);
+
+    if (leftClickPressed || rightClickPressed) //always do ray if any mouse was clicked
     {
       Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition, Camera.MonoOrStereoscopicEye.Mono);
       RaycastHit[] hits = new RaycastHit[5];
@@ -21,9 +27,17 @@ public class GameManagerComp : MonoBehaviour
           HexTileComp hex = hits[i].transform.GetComponentInParent<HexTileComp>();
           if (hex)
           {
-            HexTileComp.ERotateDir dir = leftClick ? HexTileComp.ERotateDir.eLeft : HexTileComp.ERotateDir.eRight;
-            hex.RotateTile(dir);
-            hex.FlipTile();
+            //resolve for doubleclick first
+            if (bothPressed)
+            {
+              hex.FlipTile();
+            }
+            else
+            {
+              HexTileComp.ERotateDir dir = leftClickPressed ? HexTileComp.ERotateDir.eLeft : HexTileComp.ERotateDir.eRight;
+              hex.RotateTile(dir);
+            }
+
             break;
           }
         }

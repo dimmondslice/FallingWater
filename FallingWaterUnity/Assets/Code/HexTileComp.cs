@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class HexTileComp : MonoBehaviour
 {
-  public GameObject m_nub;
   public Transform m_flipPartner;
+  public GameObject m_nub;
+  public Transform m_turnSignal;
 
   public void Start()
   {
+    //reparent turn signal first so it doesn't move when tile is rotated ever
+    if (m_turnSignal)
+    {
+      m_turnSignal.parent = transform.parent;
+    }
 
     int onOff = Random.Range(0, 7);
     gameObject.SetActive(onOff != 0);
@@ -30,16 +36,16 @@ public class HexTileComp : MonoBehaviour
   }
   public void RotateTile(ERotateDir dir)
   {
-    if (!m_flipPartner)
-    {
-      int sign = dir == ERotateDir.eRight ? 1 : -1;
-      transform.Rotate(-Vector3.forward, 60.0f * sign, Space.Self);
-    }
+    int sign = dir == ERotateDir.eRight ? 1 : -1;
+    transform.Rotate(-Vector3.forward, 60.0f * sign, Space.Self);
   }
   public void FlipTile()
   {
     if (m_flipPartner)
     {
+      //make sure to reposition turn signal
+      Vector3 hexSpaceRelativePos = m_turnSignal.position - transform.position;
+
       Vector3 flipDir = transform.position - m_flipPartner.position;
       flipDir = Vector3.Cross(flipDir, -transform.forward);
       transform.RotateAround(transform.position, flipDir, 180.0f);
@@ -48,6 +54,9 @@ public class HexTileComp : MonoBehaviour
       Vector3 tempPos = transform.position;
       transform.position = m_flipPartner.position;
       m_flipPartner.position = tempPos;
+
+      //correct turn signal position
+      m_turnSignal.position = transform.position + hexSpaceRelativePos;
     }
   }
 }
