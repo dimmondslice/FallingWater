@@ -24,7 +24,7 @@ public class BugEnemyComp : MonoBehaviour
     float xDelta = m_initalXPos - transform.position.x;
 
 
-    Vector3 force = (m_moveForce * transform.up) + new Vector3(xDelta, 0.0f, 0.0f);
+    Vector3 force = (m_moveForce * transform.up) + new Vector3(xDelta * 1.25f, 0.0f, 0.0f);
     m_rigid.AddForce(force);
 
     /*m_rigid.velocity = new Vector3(Mathf.Clamp(m_rigid.velocity.x, 0.0f, m_maxUpSpeed)
@@ -44,7 +44,7 @@ public class BugEnemyComp : MonoBehaviour
   {
     if(other.gameObject.layer == 8)
     {
-      m_rigid.AddForce(3f * m_nextDir , 0.0f, 0.0f);
+      m_rigid.AddForce(4f * m_nextDir , 0.0f, 0.0f);
     }
   }
 }
