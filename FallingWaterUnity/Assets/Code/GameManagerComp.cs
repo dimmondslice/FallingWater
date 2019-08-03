@@ -4,13 +4,6 @@ using UnityEngine;
 
 public class GameManagerComp : MonoBehaviour
 {
-  // Start is called before the first frame update
-  void Start()
-  {
-        
-  }
-
-  // Update is called once per frame
   void Update()
   {
     bool leftClick = Input.GetMouseButtonDown(0);
@@ -30,6 +23,7 @@ public class GameManagerComp : MonoBehaviour
           {
             HexTileComp.ERotateDir dir = leftClick ? HexTileComp.ERotateDir.eLeft : HexTileComp.ERotateDir.eRight;
             hex.RotateTile(dir);
+            hex.FlipTile();
             break;
           }
         }
