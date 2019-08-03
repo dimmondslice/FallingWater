@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class GameManagerComp : MonoBehaviour
 {
+  public int m_Health;
+
   void Update()
   {
-
     bool leftClickPressed = Input.GetMouseButtonUp(0);
     bool rightClickPressed = Input.GetMouseButtonUp(1);
     bool leftClickHeld = Input.GetMouseButton(0);
@@ -41,6 +42,24 @@ public class GameManagerComp : MonoBehaviour
             break;
           }
         }
+      }
+    }
+  }
+
+  private void OnTriggerEnter(Collider other)
+  {
+    if(other.gameObject.layer == 10) //bug
+    {
+      BugEnemyComp bug = other.GetComponentInParent<BugEnemyComp>();
+      if (bug)
+      {
+        Destroy(bug.gameObject);
+      }
+
+      m_Health-= 5;
+      if(m_Health <= 0)
+      {
+        //gameover restart level
       }
     }
   }

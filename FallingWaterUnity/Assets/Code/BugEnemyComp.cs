@@ -6,7 +6,9 @@ public class BugEnemyComp : MonoBehaviour
 {
   public float m_maxUpSpeed;
   public float m_moveForce;
-  public int health;
+  public int m_health;
+
+  public Transform m_meshTrans;
 
   private Rigidbody m_rigid;
   private float m_initalXPos;
@@ -22,11 +24,17 @@ public class BugEnemyComp : MonoBehaviour
 
   private void FixedUpdate()
   {
+    Vector3 force = (m_moveForce * transform.up) ;
+
     float xDelta = m_initalXPos - transform.position.x;
+    if (xDelta > 0.1f)
+    {
+      force += transform.right * xDelta * 1.25f;
+    }
+    force += transform.forward * .5f; //magnetize bug to ground kinda
 
-
-    Vector3 force = (m_moveForce * transform.up) + new Vector3(xDelta * 1.25f, 0.0f, 0.0f);
     m_rigid.AddForce(force);
+    Debug.DrawRay(transform.position, force, Color.green);
 
     /*m_rigid.velocity = new Vector3(Mathf.Clamp(m_rigid.velocity.x, 0.0f, m_maxUpSpeed)
                                   , Mathf.Clamp(m_rigid.velocity.y, 0.0f, m_maxUpSpeed)
@@ -36,23 +44,40 @@ public class BugEnemyComp : MonoBehaviour
 
   private void OnParticleCollision(GameObject other)
   {
-    if(other.layer == 4)
+    if(other.layer == 4)//water layer
     {
-      health--;
+      m_health--;
+      if(m_health <= 0)
+      {
+        Destroy(gameObject);
+      }
     }
   }
+
+  private void OnTriggerEnter(Collider other)
+  {
+    if (other.gameObject.layer == 11) //nub trigger
+    {
+      m_meshTrans.localPosition = new Vector3(0.0f, 0.0f, -.4f);
+    }
+  }
+
   private void OnTriggerExit(Collider other)
   {
     if (other.gameObject.layer == 8)
     {
       m_nextDir *= -1;
     }
+    else if (other.gameObject.layer == 11) //nub trigger
+    {
+      m_meshTrans.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+    }
   }
   private void OnTriggerStay(Collider other)
   {
-    if(other.gameObject.layer == 8) //nub layer
+    if(other.gameObject.layer == 8) //turnSignal layer
     {
-      Vector3 force = (transform.right * (4f * m_nextDir)) + (transform.up * (-1.0f));
+      Vector3 force = (transform.right * (4f * m_nextDir)) + (transform.up * (-.0f));
       m_rigid.AddForce(force);
     }
   }
