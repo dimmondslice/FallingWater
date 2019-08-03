@@ -292,7 +292,7 @@ GameObject:
   - component: {fileID: 137324814}
   - component: {fileID: 137324813}
   - component: {fileID: 137324812}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: WaterSpout
   m_TagString: Untagged
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}

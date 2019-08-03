@@ -6,6 +6,7 @@ public class BugEnemyComp : MonoBehaviour
 {
   public float m_maxUpSpeed;
   public float m_moveForce;
+  public int health;
 
   private Rigidbody m_rigid;
   private float m_initalXPos;
@@ -33,6 +34,13 @@ public class BugEnemyComp : MonoBehaviour
   */
   }
 
+  private void OnParticleCollision(GameObject other)
+  {
+    if(other.layer == 4)
+    {
+      health--;
+    }
+  }
   private void OnTriggerExit(Collider other)
   {
     if (other.gameObject.layer == 8)
@@ -42,9 +50,10 @@ public class BugEnemyComp : MonoBehaviour
   }
   private void OnTriggerStay(Collider other)
   {
-    if(other.gameObject.layer == 8)
+    if(other.gameObject.layer == 8) //nub layer
     {
-      m_rigid.AddForce(4f * m_nextDir , 0.0f, 0.0f);
+      Vector3 force = (transform.right * (4f * m_nextDir)) + (transform.up * (-1.0f));
+      m_rigid.AddForce(force);
     }
   }
 }
