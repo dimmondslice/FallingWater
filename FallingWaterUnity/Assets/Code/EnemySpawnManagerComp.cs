@@ -16,20 +16,24 @@ public class EnemySpawnManagerComp : MonoBehaviour
   private void Start()
   {
     m_timeToNextSpawn = m_spawnFrequencySec;
+    m_currentSpawner = 0;
   }
+
   void Update()
   {
     m_timeToNextSpawn -= Time.deltaTime;
 
     if(m_timeToNextSpawn <= 0.0f)
     {
-      Instantiate(m_enemyPrefab, m_spawners[m_currentSpawner].transform.position, Quaternion.identity, m_spawners[m_currentSpawner].transform);
+      Transform spawner = m_spawners[m_currentSpawner].transform;
+      Instantiate(m_enemyPrefab, spawner.position, spawner.rotation, spawner);
       m_currentSpawnSetIndex++;
 
       if (m_currentSpawnSetIndex >= m_spawnSetSize)
       {
         m_currentSpawner = Random.Range(0, m_spawners.Length);
         m_currentSpawnSetIndex = 0;
+        m_timeToNextSpawn = m_spawnFrequencySec * m_spawnSetSize; //one set's worth of time with no enemies
       }
 
       m_timeToNextSpawn = m_spawnFrequencySec;
