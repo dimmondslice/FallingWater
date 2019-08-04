@@ -113,6 +113,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -280,7 +281,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31095451f4cd96340bff130e92abf091, type: 2}
+  - {fileID: 2100000, guid: 02f6ca9f9e929d54fb30d4cc6b6ee337, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -288,6 +289,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -376,11 +378,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4797090878822534}
     m_Modifications:
-    - target: {fileID: 671311703093186447, guid: a64929643246db7409228cc7bb1243cd,
-        type: 3}
-      propertyPath: m_Name
-      value: TurnSignal
-      objectReference: {fileID: 0}
     - target: {fileID: 671311703093186446, guid: a64929643246db7409228cc7bb1243cd,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -435,6 +432,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 671311703093186447, guid: a64929643246db7409228cc7bb1243cd,
+        type: 3}
+      propertyPath: m_Name
+      value: TurnSignal
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a64929643246db7409228cc7bb1243cd, type: 3}

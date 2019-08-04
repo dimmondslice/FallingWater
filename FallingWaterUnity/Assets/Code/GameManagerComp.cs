@@ -59,7 +59,7 @@ public class GameManagerComp : MonoBehaviour
       m_Health-= 5;
       if(m_Health <= 0)
       {
-        //gameover restart level
+        print("gameover sad");
       }
     }
   }

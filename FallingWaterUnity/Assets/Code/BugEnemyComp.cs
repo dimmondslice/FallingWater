@@ -4,21 +4,20 @@ using UnityEngine;
 
 public class BugEnemyComp : MonoBehaviour
 {
-  public float m_maxUpSpeed;
+  public float m_maxVelocity;
   public float m_moveForce;
   public int m_health;
+  public int m_nextDir = 1;
 
   public Transform m_meshTrans;
 
   private Rigidbody m_rigid;
   private float m_initalXPos;
-  private int m_nextDir;
 
   void Start()
   {
     m_rigid = GetComponentInChildren<Rigidbody>();
 
-    m_nextDir = 1;
     m_initalXPos = transform.position.x;
   }
 
@@ -27,7 +26,7 @@ public class BugEnemyComp : MonoBehaviour
     Vector3 force = (m_moveForce * transform.up) ;
 
     float xDelta = m_initalXPos - transform.position.x;
-    if (xDelta > 0.1f)
+    if (Mathf.Abs(xDelta) > 0.1f)
     {
       force += transform.right * xDelta * 1.25f;
     }
@@ -36,6 +35,10 @@ public class BugEnemyComp : MonoBehaviour
     m_rigid.AddForce(force);
     Debug.DrawRay(transform.position, force, Color.green);
 
+    if(m_rigid.velocity.magnitude > m_maxVelocity)
+    {
+      m_rigid.velocity = m_rigid.velocity.normalized * m_maxVelocity;
+    }
     /*m_rigid.velocity = new Vector3(Mathf.Clamp(m_rigid.velocity.x, 0.0f, m_maxUpSpeed)
                                   , Mathf.Clamp(m_rigid.velocity.y, 0.0f, m_maxUpSpeed)
                                   , Mathf.Clamp(m_rigid.velocity.z, 0.0f, m_maxUpSpeed));

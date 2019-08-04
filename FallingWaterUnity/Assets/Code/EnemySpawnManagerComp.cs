@@ -26,7 +26,9 @@ public class EnemySpawnManagerComp : MonoBehaviour
     if(m_timeToNextSpawn <= 0.0f)
     {
       Transform spawner = m_spawners[m_currentSpawner].transform;
-      Instantiate(m_enemyPrefab, spawner.position, spawner.rotation, spawner);
+      GameObject freshy = Instantiate(m_enemyPrefab, spawner.position, spawner.rotation, spawner);
+      freshy.GetComponent<BugEnemyComp>().m_nextDir = m_currentSpawnSetIndex % 2 == 0 ? -1 : 1; //alternate which side of the hexes the enemies prefer
+
       m_currentSpawnSetIndex++;
 
       if (m_currentSpawnSetIndex >= m_spawnSetSize)
