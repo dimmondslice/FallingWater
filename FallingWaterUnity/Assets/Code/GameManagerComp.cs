@@ -11,10 +11,11 @@ public class GameManagerComp : MonoBehaviour
   public Transform m_root;
   public GameObject[] m_levels;
   public GameObject m_nextLevelButton;
-  public GameObject m_restartLevelButton;
+  public GameObject m_GameOverText;
   public Text m_healthText;
   public AudioClip m_levelFlyInSound;
   public AudioClip m_levelFlyOutSound;
+  public AudioClip m_damageToPlayer;
 
 
   private int m_currentLevelIndex;
@@ -46,6 +47,10 @@ public class GameManagerComp : MonoBehaviour
     if(BugEnemyComp.s_totalEnemiesAlive <= 0 && EnemySpawnManagerComp.s_done && m_health > 0)
     {
       m_nextLevelButton.SetActive(true);
+    }
+    else if(m_health <= 0)
+    {
+      m_GameOverText.SetActive(true);
     }
   }
 
@@ -100,9 +105,14 @@ public class GameManagerComp : MonoBehaviour
       }
 
       m_health-= 5;
-      if(m_health <= 0)
+
+      float random = Random.Range(.80f, 1.2f);
+      GetComponent<AudioSource>().pitch = random;
+      GetComponent<AudioSource>().PlayOneShot(m_damageToPlayer, .75f);
+
+      if (m_health <= 0)
       {
-        m_restartLevelButton.SetActive(true);
+        m_GameOverText.SetActive(true);
       }
     }
   }
@@ -119,6 +129,11 @@ public class GameManagerComp : MonoBehaviour
 
   public void LoadNextLevel()
   {
+    m_health = 100;
+
+    m_GameOverText.SetActive(false);
+    m_nextLevelButton.SetActive(false);
+
     StartCoroutine("FlyOutLevel");
   }
 
@@ -160,7 +175,6 @@ public class GameManagerComp : MonoBehaviour
   }
   void StartCurrentLevel()
   {
-    m_restartLevelButton.SetActive(false);
-    m_nextLevelButton.SetActive(false);
+
   }
 }

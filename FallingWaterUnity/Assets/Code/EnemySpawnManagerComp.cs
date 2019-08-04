@@ -40,7 +40,7 @@ public class EnemySpawnManagerComp : MonoBehaviour
 
     m_timeToNextSpawn -= Time.deltaTime;
 
-    if(m_timeToNextSpawn <= 0.0f)
+    if(m_timeToNextSpawn <= 0.0f && m_sets.Length > 0)
     {
       Transform spawner = m_sets[m_currentSet].spawner; //m_spawners[m_currentSpawner].transform;
       BugEnemyComp.s_totalEnemiesAlive++;

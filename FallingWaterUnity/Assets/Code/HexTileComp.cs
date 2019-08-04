@@ -34,7 +34,7 @@ public class HexTileComp : MonoBehaviour
 
     //randomly enable nub
     onOff = Random.Range(0, 4);
-    if (m_ControlNub && !m_ControlNub.activeSelf)
+    if (m_ControlNub && !m_ControlNub.activeInHierarchy)
     {
       //m_nub.SetActive(onOff == 0);
     }
