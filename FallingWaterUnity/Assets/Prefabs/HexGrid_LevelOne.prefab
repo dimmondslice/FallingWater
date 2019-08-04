@@ -10,22 +10,22 @@ PrefabInstance:
     - target: {fileID: 703963075143434373, guid: 479244352261ccf4b9e41238a5925aa9,
         type: 3}
       propertyPath: m_Name
-      value: HexGrid
+      value: HexGrid_LevelOne
       objectReference: {fileID: 0}
     - target: {fileID: 703963075143434372, guid: 479244352261ccf4b9e41238a5925aa9,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 703963075143434372, guid: 479244352261ccf4b9e41238a5925aa9,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: -7.746027
       objectReference: {fileID: 0}
     - target: {fileID: 703963075143434372, guid: 479244352261ccf4b9e41238a5925aa9,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 15.76
+      value: -1.8514404
       objectReference: {fileID: 0}
     - target: {fileID: 703963075143434372, guid: 479244352261ccf4b9e41238a5925aa9,
         type: 3}

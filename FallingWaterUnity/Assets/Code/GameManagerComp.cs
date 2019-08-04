@@ -1,16 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.TextCore;
 
 public class GameManagerComp : MonoBehaviour
 {
-  public int m_Health;
+  public int m_health;
   public Transform m_levelLerpToLocation;
   public Transform m_root;
   public GameObject[] m_levels;
   public GameObject m_nextLevelButton;
   public GameObject m_restartLevelButton;
+  public Text m_healthText;
   public AudioClip m_levelFlyInSound;
+  public AudioClip m_levelFlyOutSound;
 
 
   private int m_currentLevelIndex;
@@ -32,11 +36,14 @@ public class GameManagerComp : MonoBehaviour
 
     //all the input in the game basically
     ProcessPlayerInput();
+
+    //UI
+    m_healthText.text = "Health: " + m_health;
   }
 
   void CheckForLevelComplete()
   {
-    if(BugEnemyComp.s_totalEnemiesAlive <= 0 && EnemySpawnManagerComp.s_done )
+    if(BugEnemyComp.s_totalEnemiesAlive <= 0 && EnemySpawnManagerComp.s_done && m_health > 0)
     {
       m_nextLevelButton.SetActive(true);
     }
@@ -92,10 +99,10 @@ public class GameManagerComp : MonoBehaviour
         bug.Kill();
       }
 
-      m_Health-= 5;
-      if(m_Health <= 0)
+      m_health-= 5;
+      if(m_health <= 0)
       {
-        print("gameover sad");
+        m_restartLevelButton.SetActive(true);
       }
     }
   }
@@ -115,8 +122,16 @@ public class GameManagerComp : MonoBehaviour
     StartCoroutine("FlyOutLevel");
   }
 
+  public void RestartCurrentLevel()
+  {
+    m_currentLevelIndex--;
+    LoadNextLevel();
+  }
+
   IEnumerator FlyOutLevel()
   {
+    GetComponent<AudioSource>().PlayOneShot(m_levelFlyOutSound, .75f);
+
     while (Vector3.Distance(m_currentSpawnedLevel.position, m_levelLerpToLocation.position) > 4f)
     {
       m_currentSpawnedLevel.position = Vector3.Lerp(m_currentSpawnedLevel.position, m_levelLerpToLocation.position, Time.deltaTime * 2);
@@ -145,6 +160,7 @@ public class GameManagerComp : MonoBehaviour
   }
   void StartCurrentLevel()
   {
-
+    m_restartLevelButton.SetActive(false);
+    m_nextLevelButton.SetActive(false);
   }
 }
