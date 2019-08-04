@@ -23,6 +23,15 @@ public class GameManagerComp : MonoBehaviour
   }
   void Update()
   {
+    //level done yet?
+    CheckForLevelComplete();
+
+    //all the input in the game basically
+    ProcessPlayerInput();
+  }
+
+  void ProcessPlayerInput()
+  { 
     bool leftClickPressed = Input.GetMouseButtonUp(0);
     bool rightClickPressed = Input.GetMouseButtonUp(1);
     bool leftClickHeld = Input.GetMouseButton(0);
@@ -59,6 +68,11 @@ public class GameManagerComp : MonoBehaviour
         }
       }
     }
+  }
+
+  void CheckForLevelComplete()
+  {
+
   }
 
   private void OnTriggerEnter(Collider other)
