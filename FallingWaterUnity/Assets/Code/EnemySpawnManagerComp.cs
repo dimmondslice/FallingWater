@@ -12,7 +12,8 @@ public class EnemySpawnManagerComp : MonoBehaviour
   private int m_currentSpawnSetIndex;
   private int m_currentSet;
   private float m_timeToNextSpawn;
-  private bool m_done = false;
+
+  public static bool s_done = false;
 
   [System.Serializable]
   public struct SpawnSet
@@ -24,6 +25,8 @@ public class EnemySpawnManagerComp : MonoBehaviour
 
   private void Start()
   {
+    s_done = false; //static state, need to reinstate this after this spawns
+
     m_timeToNextSpawn = m_spawnFrequencySec;
     m_currentSet = 0;
     //m_currentSpawner = Random.Range(0, m_spawners.Length);
@@ -31,7 +34,7 @@ public class EnemySpawnManagerComp : MonoBehaviour
 
   void Update()
   {
-    if (m_done)
+    if (s_done)
       return;
 
     m_timeToNextSpawn -= Time.deltaTime;
@@ -47,13 +50,13 @@ public class EnemySpawnManagerComp : MonoBehaviour
       if (m_currentSpawnSetIndex >= m_sets[m_currentSet].numEnemies)
       {
         m_currentSet++; //m_currentSpawner = Random.Range(0, m_spawners.Length);
+        if (m_currentSet >= m_sets.Length)
+        {
+          s_done = true;
+        }
+
         m_currentSpawnSetIndex = 0;
         m_timeToNextSpawn = m_spawnFrequencySec * m_sets[m_currentSet].numEnemies; //one set's worth of time with no enemies
-
-        if(m_currentSet >= m_sets.Length)
-        {
-          m_done = true;
-        }
       }
 
       m_timeToNextSpawn = m_spawnFrequencySec;

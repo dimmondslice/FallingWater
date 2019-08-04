@@ -8,6 +8,7 @@ public class GameManagerComp : MonoBehaviour
   public Transform m_levelLerpToLocation;
   public Transform m_root;
   public GameObject[] m_levels;
+  public GameObject m_nextLevelButton;
 
 
 
@@ -28,6 +29,14 @@ public class GameManagerComp : MonoBehaviour
 
     //all the input in the game basically
     ProcessPlayerInput();
+  }
+
+  void CheckForLevelComplete()
+  {
+    if(BugEnemyComp.s_totalEnemiesAlive <= 0 && EnemySpawnManagerComp.s_done )
+    {
+      m_nextLevelButton.SetActive(true);
+    }
   }
 
   void ProcessPlayerInput()
@@ -70,11 +79,6 @@ public class GameManagerComp : MonoBehaviour
     }
   }
 
-  void CheckForLevelComplete()
-  {
-
-  }
-
   private void OnTriggerEnter(Collider other)
   {
     if(other.gameObject.layer == 10) //bug
@@ -93,14 +97,14 @@ public class GameManagerComp : MonoBehaviour
     }
   }
 
-  public void BeginGame()
-  {
-    LoadNextLevel();
-  }
-
   public void QuitGame()
   {
     Application.Quit();
+  }
+
+  public void BeginGame()
+  {
+    LoadNextLevel();
   }
 
   public void LoadNextLevel()
