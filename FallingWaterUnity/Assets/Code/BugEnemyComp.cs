@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BugEnemyComp : MonoBehaviour
 {
+  public static int s_totalEnemiesAlive = 0;
+
   public float m_maxVelocity;
   public float m_moveForce;
   public int m_health;
@@ -14,8 +16,17 @@ public class BugEnemyComp : MonoBehaviour
   private Rigidbody m_rigid;
   private float m_initalXPos;
 
+  public void Kill()
+  {
+    s_totalEnemiesAlive--;
+    Destroy(gameObject);
+  }
+
   void Start()
   {
+
+    s_totalEnemiesAlive++;
+
     m_rigid = GetComponentInChildren<Rigidbody>();
 
     m_initalXPos = transform.position.x;
@@ -39,10 +50,6 @@ public class BugEnemyComp : MonoBehaviour
     {
       m_rigid.velocity = m_rigid.velocity.normalized * m_maxVelocity;
     }
-    /*m_rigid.velocity = new Vector3(Mathf.Clamp(m_rigid.velocity.x, 0.0f, m_maxUpSpeed)
-                                  , Mathf.Clamp(m_rigid.velocity.y, 0.0f, m_maxUpSpeed)
-                                  , Mathf.Clamp(m_rigid.velocity.z, 0.0f, m_maxUpSpeed));
-  */
   }
 
   private void OnParticleCollision(GameObject other)
@@ -52,7 +59,7 @@ public class BugEnemyComp : MonoBehaviour
       m_health--;
       if(m_health <= 0)
       {
-        Destroy(gameObject);
+        Kill();
       }
     }
   }

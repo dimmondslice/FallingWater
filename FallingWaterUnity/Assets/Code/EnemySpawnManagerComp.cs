@@ -16,7 +16,7 @@ public class EnemySpawnManagerComp : MonoBehaviour
   private void Start()
   {
     m_timeToNextSpawn = m_spawnFrequencySec;
-    m_currentSpawner = 0;
+    m_currentSpawner = Random.Range(0, m_spawners.Length);
   }
 
   void Update()
