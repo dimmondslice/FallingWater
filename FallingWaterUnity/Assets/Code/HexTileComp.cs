@@ -5,7 +5,7 @@ using UnityEngine;
 public class HexTileComp : MonoBehaviour
 {
   public Transform m_flipPartner;
-  public GameObject m_nub;
+  public GameObject m_ControlNub;
   public Transform m_turnSignal;
 
   public AudioClip[] m_rotateSounds;
@@ -34,7 +34,7 @@ public class HexTileComp : MonoBehaviour
 
     //randomly enable nub
     onOff = Random.Range(0, 4);
-    if (m_nub && !m_nub.activeSelf)
+    if (m_ControlNub && !m_ControlNub.activeSelf)
     {
       //m_nub.SetActive(onOff == 0);
     }
@@ -47,12 +47,15 @@ public class HexTileComp : MonoBehaviour
   }
   public void RotateTile(ERotateDir dir)
   {
-    int sign = dir == ERotateDir.eRight ? 1 : -1;
-    transform.Rotate(-Vector3.forward, 60.0f * sign, Space.Self);
+    if (m_ControlNub.activeSelf)//only hexes with the control nub can be rotated
+    {
+      int sign = dir == ERotateDir.eRight ? 1 : -1;
+      transform.Rotate(-Vector3.forward, 60.0f * sign, Space.Self);
 
-    int index = Random.Range(0, m_rotateSounds.Length);
-    audioSource.pitch = .9f + (index % 3 * .1f);
-    audioSource.PlayOneShot(m_rotateSounds[index], .5f);
+      int index = Random.Range(0, m_rotateSounds.Length);
+      audioSource.pitch = .9f + (index % 3 * .1f);
+      audioSource.PlayOneShot(m_rotateSounds[index], .5f);
+    }
   }
   public void FlipTile()
   {

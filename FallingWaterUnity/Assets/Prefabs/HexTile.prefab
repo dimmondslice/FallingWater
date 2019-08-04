@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_flipPartner: {fileID: 0}
-  m_nub: {fileID: 7487845810900974173}
+  m_ControlNub: {fileID: 7487845810900974173}
   m_turnSignal: {fileID: 3941742207990774838}
   m_rotateSounds:
   - {fileID: 8300000, guid: 84365edab69f15f48b8a3a874ac4bb47, type: 3}
