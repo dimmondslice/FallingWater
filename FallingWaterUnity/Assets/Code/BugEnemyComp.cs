@@ -24,9 +24,6 @@ public class BugEnemyComp : MonoBehaviour
 
   void Start()
   {
-
-    s_totalEnemiesAlive++;
-
     m_rigid = GetComponentInChildren<Rigidbody>();
 
     m_initalXPos = transform.position.x;

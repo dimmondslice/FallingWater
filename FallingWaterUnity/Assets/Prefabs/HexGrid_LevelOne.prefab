@@ -94,7 +94,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 379106321, guid: 479244352261ccf4b9e41238a5925aa9, type: 3}
       propertyPath: m_sets.Array.size
-      value: 7
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 379106321, guid: 479244352261ccf4b9e41238a5925aa9, type: 3}
       propertyPath: m_spawners.Array.data[0]

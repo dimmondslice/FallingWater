@@ -24,7 +24,7 @@ public class HexTileComp : MonoBehaviour
     }
 
     int onOff = Random.Range(0, 7);
-    gameObject.SetActive(onOff != 0);
+    //gameObject.SetActive(onOff != 0);
     int rotations = Random.Range(0, 6);
     transform.Rotate(Vector3.forward, 60.0f * rotations, Space.Self);
 
@@ -32,7 +32,7 @@ public class HexTileComp : MonoBehaviour
     onOff = Random.Range(0, 4);
     if (m_nub && !m_nub.activeSelf)
     {
-      m_nub.SetActive(onOff == 0);
+      //m_nub.SetActive(onOff == 0);
     }
   }
 
@@ -47,7 +47,8 @@ public class HexTileComp : MonoBehaviour
     transform.Rotate(-Vector3.forward, 60.0f * sign, Space.Self);
 
     int index = Random.Range(0, m_rotateSounds.Length);
-    audioSource.PlayOneShot(m_rotateSounds[index], 1.0f);
+    audioSource.pitch = .9f + (index % 3 * .1f);
+    audioSource.PlayOneShot(m_rotateSounds[index], .5f);
   }
   public void FlipTile()
   {
@@ -70,7 +71,8 @@ public class HexTileComp : MonoBehaviour
 
       //sound queue
       int index = Random.Range(0, m_flipSounds.Length);
-      audioSource.PlayOneShot(m_flipSounds[index], 1.0f);
+      audioSource.pitch = .9f + (index % 3 * .1f);
+      audioSource.PlayOneShot(m_flipSounds[index], .5f);
     }
   }
 }

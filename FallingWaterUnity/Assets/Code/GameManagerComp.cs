@@ -9,7 +9,8 @@ public class GameManagerComp : MonoBehaviour
   public Transform m_root;
   public GameObject[] m_levels;
   public GameObject m_nextLevelButton;
-
+  public GameObject m_restartLevelButton;
+  public AudioClip m_levelFlyInSound;
 
 
   private int m_currentLevelIndex;
@@ -21,6 +22,8 @@ public class GameManagerComp : MonoBehaviour
     m_currentLevelIndex = 0;
     m_currentSpawnedLevel = m_levels[m_currentLevelIndex].transform;
     m_initalLevelPos = m_currentSpawnedLevel.position;
+
+    //m_healthText.text = "butts";
   }
   void Update()
   {
@@ -129,12 +132,15 @@ public class GameManagerComp : MonoBehaviour
   }
   IEnumerator FlyInLevel()
   {
-    while (Vector3.Distance(m_currentSpawnedLevel.position, m_initalLevelPos) > .3f)
+    while (Vector3.Distance(m_currentSpawnedLevel.position, m_initalLevelPos) > .2f)
     {
       m_currentSpawnedLevel.position = Vector3.Lerp(m_currentSpawnedLevel.position, m_initalLevelPos, Time.deltaTime * 4);
       yield return null;
     }
     m_currentSpawnedLevel.position = m_initalLevelPos;
+
+    GetComponent<AudioSource>().PlayOneShot(m_levelFlyInSound, .75f);
+
     StartCurrentLevel();
   }
   void StartCurrentLevel()

@@ -26,6 +26,7 @@ public class EnemySpawnManagerComp : MonoBehaviour
   private void Start()
   {
     s_done = false; //static state, need to reinstate this after this spawns
+    BugEnemyComp.s_totalEnemiesAlive = 0;
 
     m_timeToNextSpawn = m_spawnFrequencySec;
     m_currentSet = 0;
@@ -42,6 +43,7 @@ public class EnemySpawnManagerComp : MonoBehaviour
     if(m_timeToNextSpawn <= 0.0f)
     {
       Transform spawner = m_sets[m_currentSet].spawner; //m_spawners[m_currentSpawner].transform;
+      BugEnemyComp.s_totalEnemiesAlive++;
       GameObject freshy = Instantiate(m_enemyPrefab, spawner.position, spawner.rotation, spawner);
       freshy.GetComponent<BugEnemyComp>().m_nextDir = m_currentSpawnSetIndex % 2 == 0 ? -1 : 1; //alternate which side of the hexes the enemies prefer
 
@@ -53,6 +55,7 @@ public class EnemySpawnManagerComp : MonoBehaviour
         if (m_currentSet >= m_sets.Length)
         {
           s_done = true;
+          return;
         }
 
         m_currentSpawnSetIndex = 0;
