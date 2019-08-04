@@ -164,7 +164,7 @@ public class GameManagerComp : MonoBehaviour
   {
     while (Vector3.Distance(m_currentSpawnedLevel.position, m_initalLevelPos) > .2f)
     {
-      m_currentSpawnedLevel.position = Vector3.Lerp(m_currentSpawnedLevel.position, m_initalLevelPos, Time.deltaTime * 4);
+      m_currentSpawnedLevel.position = Vector3.Lerp(m_currentSpawnedLevel.position, m_initalLevelPos, Time.deltaTime * 5);
       yield return null;
     }
     m_currentSpawnedLevel.position = m_initalLevelPos;

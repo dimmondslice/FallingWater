@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 703963075143434373, guid: 479244352261ccf4b9e41238a5925aa9,
         type: 3}
       propertyPath: m_Name
-      value: HexGrid_LevelTwo
+      value: HexGrid_LevelTwo Variant
       objectReference: {fileID: 0}
     - target: {fileID: 703963075143434373, guid: 479244352261ccf4b9e41238a5925aa9,
         type: 3}
@@ -152,7 +152,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 379106321, guid: 479244352261ccf4b9e41238a5925aa9, type: 3}
       propertyPath: m_spawnFrequencySec
-      value: 2
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 415681989, guid: 479244352261ccf4b9e41238a5925aa9, type: 3}
       propertyPath: m_LocalPosition.x
