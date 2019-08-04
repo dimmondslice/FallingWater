@@ -61,7 +61,7 @@ public class BugEnemyComp : MonoBehaviour
   {
     if (other.gameObject.layer == 11) //nub trigger
     {
-      m_meshTrans.localPosition = new Vector3(0.0f, 0.0f, -.4f);
+      m_meshTrans.localPosition = new Vector3(0.0f, 0.0f, -.25f);
     }
   }
 

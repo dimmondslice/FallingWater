@@ -8,8 +8,15 @@ public class HexTileComp : MonoBehaviour
   public GameObject m_nub;
   public Transform m_turnSignal;
 
+  public AudioClip[] m_rotateSounds;
+  public AudioClip[] m_flipSounds;
+
+  private AudioSource audioSource;
+
   public void Start()
   {
+    audioSource = GetComponent<AudioSource>();
+
     //reparent turn signal first so it doesn't move when tile is rotated ever
     if (m_turnSignal)
     {
@@ -38,6 +45,9 @@ public class HexTileComp : MonoBehaviour
   {
     int sign = dir == ERotateDir.eRight ? 1 : -1;
     transform.Rotate(-Vector3.forward, 60.0f * sign, Space.Self);
+
+    int index = Random.Range(0, m_rotateSounds.Length);
+    audioSource.PlayOneShot(m_rotateSounds[index], 1.0f);
   }
   public void FlipTile()
   {
@@ -57,6 +67,10 @@ public class HexTileComp : MonoBehaviour
 
       //correct turn signal position
       m_turnSignal.position = transform.position + hexSpaceRelativePos;
+
+      //sound queue
+      int index = Random.Range(0, m_flipSounds.Length);
+      audioSource.PlayOneShot(m_flipSounds[index], 1.0f);
     }
   }
 }
