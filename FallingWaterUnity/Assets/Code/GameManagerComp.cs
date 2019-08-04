@@ -18,7 +18,7 @@ public class GameManagerComp : MonoBehaviour
   public AudioClip m_damageToPlayer;
 
 
-  private int m_currentLevelIndex;
+  public static int m_currentLevelIndex;
   private Transform m_currentSpawnedLevel;
   private Vector3 m_initalLevelPos;
 
@@ -156,6 +156,7 @@ public class GameManagerComp : MonoBehaviour
     Destroy(m_currentSpawnedLevel.gameObject);
 
     m_currentLevelIndex++;
+    Mathf.Clamp(m_currentLevelIndex, 0, 4);
     GameObject nextLevel = Instantiate(m_levels[m_currentLevelIndex], m_levelLerpToLocation.position, m_root.rotation, m_root);
     m_currentSpawnedLevel = nextLevel.transform;
     StartCoroutine("FlyInLevel");

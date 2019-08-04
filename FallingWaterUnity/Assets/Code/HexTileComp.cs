@@ -28,13 +28,16 @@ public class HexTileComp : MonoBehaviour
     }
 
     int onOff = Random.Range(0, 7);
-    //gameObject.SetActive(onOff != 0);
-    int rotations = Random.Range(0, 6);
-    //transform.Rotate(Vector3.forward, 60.0f * rotations, Space.Self);
 
+    int rotations = Random.Range(0, 6);
+    if (GameManagerComp.m_currentLevelIndex == 4)
+    {
+      //gameObject.SetActive(onOff != 0);
+      //transform.Rotate(Vector3.forward, 60.0f * rotations, Space.Self);
+    }
     //randomly enable nub
     onOff = Random.Range(0, 4);
-    if (m_ControlNub && !m_ControlNub.activeInHierarchy)
+    if (m_ControlNub && !m_ControlNub.activeInHierarchy && GameManagerComp.m_currentLevelIndex == 4)
     {
       //m_nub.SetActive(onOff == 0);
     }
