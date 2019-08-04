@@ -20,13 +20,17 @@ public class HexTileComp : MonoBehaviour
     //reparent turn signal first so it doesn't move when tile is rotated ever
     if (m_turnSignal)
     {
+      Quaternion temp = transform.rotation;
+      transform.localRotation = Quaternion.identity;
       m_turnSignal.parent = transform.parent;
+
+      transform.rotation = temp;
     }
 
     int onOff = Random.Range(0, 7);
     //gameObject.SetActive(onOff != 0);
     int rotations = Random.Range(0, 6);
-    transform.Rotate(Vector3.forward, 60.0f * rotations, Space.Self);
+    //transform.Rotate(Vector3.forward, 60.0f * rotations, Space.Self);
 
     //randomly enable nub
     onOff = Random.Range(0, 4);
