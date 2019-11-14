@@ -21,6 +21,7 @@ public class GameManagerComp : MonoBehaviour
   public static int m_currentLevelIndex;
   private Transform m_currentSpawnedLevel;
   private Vector3 m_initalLevelPos;
+  private HexTileComp m_selectedTile;
 
   private void Start()
   {
@@ -56,14 +57,16 @@ public class GameManagerComp : MonoBehaviour
 
   void ProcessPlayerInput()
   { 
-    bool leftClickPressed = Input.GetMouseButtonUp(0);
+    bool leftClickDown = Input.GetMouseButtonDown(0);
+    bool leftClickUp = Input.GetMouseButtonUp(0);
     bool rightClickPressed = Input.GetMouseButtonUp(1);
     bool leftClickHeld = Input.GetMouseButton(0);
     bool rightClickHeld = Input.GetMouseButton(1);
+    bool spaceClicked = Input.GetKeyDown(KeyCode.Space);
 
-    bool bothPressed = (leftClickPressed && rightClickHeld) || (rightClickPressed && leftClickHeld);
+    bool bothPressed = (leftClickDown && rightClickHeld) || (rightClickPressed && leftClickHeld);
 
-    if (leftClickPressed || rightClickPressed) //always do ray if any mouse was clicked
+    if (leftClickDown) //|| rightClickPressed || spaceClicked) //always do ray if any mouse was clicked
     {
       Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition, Camera.MonoOrStereoscopicEye.Mono);
       RaycastHit[] hits = new RaycastHit[5];
@@ -77,19 +80,31 @@ public class GameManagerComp : MonoBehaviour
           if (hex)
           {
             //resolve for doubleclick first
-            if (bothPressed)
+            if (bothPressed  || spaceClicked)
             {
               hex.FlipTile();
             }
             else
             {
-              HexTileComp.ERotateDir dir = leftClickPressed ? HexTileComp.ERotateDir.eLeft : HexTileComp.ERotateDir.eRight;
-              hex.RotateTile(dir);
+              //HexTileComp.ERotateDir dir = leftClickDown ? HexTileComp.ERotateDir.eLeft : HexTileComp.ERotateDir.eRight;
+              //hex.RotateTile(dir);
+
+              //select tile for rotation mode
+              m_selectedTile = hex;
+              hex.SetIsSelected(true);
             }
 
             break;
           }
         }
+      }
+    }
+    else if(leftClickUp)
+    {
+      if(m_selectedTile)
+      {
+        m_selectedTile.SetIsSelected(false);
+        m_selectedTile = null;
       }
     }
   }
@@ -139,7 +154,14 @@ public class GameManagerComp : MonoBehaviour
 
   public void RestartCurrentLevel()
   {
-    m_currentLevelIndex--;
+    if (m_currentLevelIndex == 0)
+    {
+      m_currentLevelIndex = 4;
+    }
+    else
+    {
+      m_currentLevelIndex--;
+    }
     LoadNextLevel();
   }
 
