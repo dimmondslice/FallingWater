@@ -15,6 +15,9 @@ public class HexTileComp : MonoBehaviour
 
   private bool m_bSelected = false;
   private int m_targetSlice;
+  private int m_currentSlice;
+
+  private bool m_bRotate_CorRunning = false;
 
   //--------------------------------------
   public enum ERotateDir
@@ -57,7 +60,7 @@ public class HexTileComp : MonoBehaviour
   //-----------------------------------------------------------------------------------------
   public void Update()
   {
-    if (Camera.current)
+    if (false)
     {
       Vector3 hexPos_ScreenSpace = Camera.current.WorldToScreenPoint(transform.position);
       hexPos_ScreenSpace.z = 0;
@@ -111,6 +114,100 @@ public class HexTileComp : MonoBehaviour
   }
 
   //-----------------------------------------------------------------------------------------
+  public void SelectTile()
+  {
+    m_bSelected = true;
+    StartCoroutine(WhileSelected_Cor());
+  }
+
+  //-----------------------------------------------------------------------------------------
+  public void DeselectTile()
+  {
+    m_bSelected = false;
+    StopCoroutine(WhileSelected_Cor());
+  }
+
+  //------------------------------------------------------------------------------------------
+  private IEnumerator WhileSelected_Cor()
+  {
+    while (m_bSelected && Camera.main)
+    {
+      Vector3 hexPos_ScreenSpace = Camera.main.WorldToScreenPoint(transform.position);
+      hexPos_ScreenSpace.z = 0;
+      Vector3 mousePos_HexSpace = Input.mousePosition - hexPos_ScreenSpace;
+
+
+
+      float targetAngleCW = Vector3.Angle(mousePos_HexSpace, Vector3.right);
+      if (mousePos_HexSpace.y > 0)
+      {
+        targetAngleCW = 360 - targetAngleCW;
+      }
+
+
+      if ((mousePos_HexSpace.magnitude/Screen.width) > (18.0f / Screen.width)/*est hex screen space size sq*/)
+      {
+        m_targetSlice = ((Mathf.FloorToInt(targetAngleCW) + 30) % 360) / 60;
+      }
+
+
+      if(m_currentSlice != m_targetSlice && !m_bRotate_CorRunning)
+      {
+        StartCoroutine(Rotate_Cor());
+      }
+
+      yield return null;
+    }
+  }
+
+  private IEnumerator Rotate_Cor()
+  {
+    m_bRotate_CorRunning = true;
+
+    float targetZAngleCW = (m_targetSlice * 60) % 360;
+    float targetZAngleReal = -1 * (targetZAngleCW);
+
+    int rotDir = 0; //set only on the first iteration
+    float targetRotDelta = Mathf.Infinity;
+    while (Mathf.Abs(targetRotDelta) > 7)
+    {
+      float currentAngleCW = -transform.rotation.eulerAngles.z;
+      if (currentAngleCW < 0)
+      {
+        currentAngleCW = 360 - currentAngleCW;
+      }
+
+      Vector3 hexRot2D = new Vector3(Mathf.Cos(currentAngleCW * Mathf.Deg2Rad), Mathf.Sin(currentAngleCW * Mathf.Deg2Rad), 0.0f);
+      Vector3 ZRotNormalVec = new Vector3(Mathf.Sin((targetZAngleReal) * Mathf.Deg2Rad), -Mathf.Cos((targetZAngleReal) * Mathf.Deg2Rad), 0.0f);
+
+      //if (Mathf.Abs(targetRotDelta) < 120)
+        rotDir = (int)Mathf.Sign((int)Vector3.Dot(hexRot2D, ZRotNormalVec));
+      targetRotDelta = rotDir * Mathf.DeltaAngle(targetZAngleReal, currentAngleCW);
+
+      transform.Rotate(-Vector3.forward, targetRotDelta * .3f, Space.Self);
+      m_currentSlice = ((Mathf.FloorToInt(currentAngleCW) + 30) % 360) / 60;
+
+      yield return null;
+    }
+    
+    //end coroutine
+    {
+      //snap into correct rotation
+      transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, targetZAngleReal);
+      m_currentSlice = m_targetSlice;
+
+      //play rotation sound
+      if (!audioSource.isPlaying)
+      {
+        int index = Random.Range(0, m_rotateSounds.Length);
+        audioSource.pitch = .9f + (index % 3 * .1f);
+        audioSource.PlayOneShot(m_rotateSounds[index], .5f);
+      }
+    }
+    m_bRotate_CorRunning = false;
+  }
+
+  //-----------------------------------------------------------------------------------------
   public void RotateTile(ERotateDir dir)
   {
     if (m_ControlNub.activeSelf)//only hexes with the control nub can be rotated
@@ -149,11 +246,5 @@ public class HexTileComp : MonoBehaviour
       audioSource.pitch = .9f + (index % 3 * .1f);
       audioSource.PlayOneShot(m_flipSounds[index], .5f);
     }
-  }
-
-  //-----------------------------------------------------------------------------------------
-  public void SetIsSelected(bool bSelected)
-  {
-    m_bSelected = bSelected;
   }
 }

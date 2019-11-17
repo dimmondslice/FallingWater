@@ -91,7 +91,7 @@ public class GameManagerComp : MonoBehaviour
 
               //select tile for rotation mode
               m_selectedTile = hex;
-              hex.SetIsSelected(true);
+              hex.SelectTile();
             }
 
             break;
@@ -103,7 +103,7 @@ public class GameManagerComp : MonoBehaviour
     {
       if(m_selectedTile)
       {
-        m_selectedTile.SetIsSelected(false);
+        m_selectedTile.DeselectTile();
         m_selectedTile = null;
       }
     }
