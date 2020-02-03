@@ -8,10 +8,19 @@ public class HexTileComp : MonoBehaviour
   public GameObject m_ControlNub;
   public Transform m_turnSignal;
 
+  public Transform m_pointer;
+  public GameObject m_ghostHexPrefab;
+
+  public float m_liftDistance;
+  public bool m_allowImmediateRotate;
+  public float m_rotateSpeed;
+
   public AudioClip[] m_rotateSounds;
   public AudioClip[] m_flipSounds;
+  public AudioClip m_endRotateSound;
 
   private AudioSource audioSource;
+  private GameObject m_currentSpawnedGhost;
 
   private bool m_bSelected = false;
   private int m_targetSlice;
@@ -58,64 +67,23 @@ public class HexTileComp : MonoBehaviour
   }
 
   //-----------------------------------------------------------------------------------------
-  public void Update()
-  {
-    if (false)
-    {
-      Vector3 hexPos_ScreenSpace = Camera.current.WorldToScreenPoint(transform.position);
-      hexPos_ScreenSpace.z = 0;
-      Vector3 mousePos_HexSpace = Input.mousePosition - hexPos_ScreenSpace;
-
-      //float currentAngleCW = ((transform.rotation.eulerAngles.z + 360) % 360);
-      //currentAngleCW = (int)(-currentAngleCW) % 360;
-      float currentAngleCW = -transform.rotation.eulerAngles.z;
-      if (currentAngleCW < 0)
-      {
-        currentAngleCW = 360 - currentAngleCW;
-      }
-
-      float targetAngleCW = Vector3.Angle(mousePos_HexSpace, Vector3.right);
-      if (mousePos_HexSpace.y > 0)
-      {
-        targetAngleCW = 360 - targetAngleCW;
-      }
-
-      
-      if (m_bSelected ) //&& mousePos_HexSpace.magnitude/Screen.width > (30 / Screen.width)/*est hex screen space size sq*/)
-      {
-        m_targetSlice = ((Mathf.FloorToInt(targetAngleCW) + 30) % 360) / 60;
-      }
-
-      float targetZAngleCW = m_targetSlice * 60;
-      float targetZAngleReal = -1 * (targetZAngleCW);
-      //if(m_bSelected)
-        //print(/*"currentAngleCW:" + currentAngleCW +*/ "\ttargetHexSlice: " + m_targetSlice + "\ttargetAngleCW: " + targetAngleCW + "\ttargetZAngleReal: " + targetZAngleReal);
-
-      Vector3 hexRot2D = new Vector3(Mathf.Cos(currentAngleCW * Mathf.Deg2Rad), Mathf.Sin(currentAngleCW * Mathf.Deg2Rad), 0.0f);
-      Vector3 ZRotNormalVec = new Vector3(Mathf.Sin((targetZAngleReal) * Mathf.Deg2Rad), -Mathf.Cos((targetZAngleReal) * Mathf.Deg2Rad), 0.0f);
-      int rotDir = (int)Mathf.Sign((int)Vector3.Dot(hexRot2D, ZRotNormalVec));
-
-      float targetRotDelta = rotDir * Mathf.DeltaAngle(targetZAngleReal, currentAngleCW);
-      
-      if (Mathf.Abs(targetRotDelta) > 5)
-      {
-        transform.Rotate(-Vector3.forward, targetRotDelta * .3f, Space.Self);
-
-      }
-      else if(m_bSelected) //snap to desired hex slice
-      {
-        //print("snap!");
-        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, targetZAngleReal);
-        //int index = Random.Range(0, m_rotateSounds.Length);
-        //audioSource.pitch = .9f + (index % 3 * .1f);
-        //audioSource.PlayOneShot(m_rotateSounds[index], .5f);
-      }
-    }
-  }
-
-  //-----------------------------------------------------------------------------------------
   public void SelectTile()
   {
+    if (!m_ControlNub.activeInHierarchy)
+      return;
+
+    transform.Translate(-transform.forward * m_liftDistance, Space.Self);
+
+    //spawn ghost
+    if (!m_allowImmediateRotate && m_ghostHexPrefab)
+    {
+      m_currentSpawnedGhost = Instantiate(m_ghostHexPrefab, transform.position, transform.rotation);
+      if (m_currentSpawnedGhost.TryGetComponent<HexTileComp>(out HexTileComp hex))
+      {
+        hex.SelectTile();
+      }
+    }
+
     m_bSelected = true;
     StartCoroutine(WhileSelected_Cor());
   }
@@ -123,37 +91,65 @@ public class HexTileComp : MonoBehaviour
   //-----------------------------------------------------------------------------------------
   public void DeselectTile()
   {
+    if (!m_ControlNub.activeInHierarchy)
+      return;
+
     m_bSelected = false;
     StopCoroutine(WhileSelected_Cor());
+
+    transform.Translate(transform.forward * m_liftDistance, Space.Self);
+
+
+    Destroy(m_currentSpawnedGhost);
+
+    //no rotate the tile after the correct position is selected
+    if (m_currentSlice != m_targetSlice && !m_bRotate_CorRunning)
+    {
+      StartCoroutine(Rotate_Cor());
+    }
+  }
+
+  //------------------------------------------------------------------------------------------
+  private IEnumerator Lift()
+  {
+    while (true)
+    {
+      yield return null;
+    }
   }
 
   //------------------------------------------------------------------------------------------
   private IEnumerator WhileSelected_Cor()
   {
-    while (m_bSelected && Camera.main)
+    while (m_bSelected)
     {
       Vector3 hexPos_ScreenSpace = Camera.main.WorldToScreenPoint(transform.position);
       hexPos_ScreenSpace.z = 0;
       Vector3 mousePos_HexSpace = Input.mousePosition - hexPos_ScreenSpace;
 
-
-
-      float targetAngleCW = Vector3.Angle(mousePos_HexSpace, Vector3.right);
-      if (mousePos_HexSpace.y > 0)
+      //update rotation
       {
-        targetAngleCW = 360 - targetAngleCW;
+        float targetAngleCW = Vector3.Angle(mousePos_HexSpace, Vector3.right);
+        if (mousePos_HexSpace.y > 0)
+        {
+          targetAngleCW = 360 - targetAngleCW;
+        }
+
+        if ((mousePos_HexSpace.magnitude / Screen.width) > (18.0f / Screen.width)/*est hex screen space size sq*/)
+        {
+          m_targetSlice = ((Mathf.FloorToInt(targetAngleCW) + 30) % 360) / 60;
+        }
+
+        //allow immediate hex rotating based on mouse
+        if (m_allowImmediateRotate && m_currentSlice != m_targetSlice && !m_bRotate_CorRunning)
+        {
+          StartCoroutine(Rotate_Cor());
+        }
       }
 
-
-      if ((mousePos_HexSpace.magnitude/Screen.width) > (18.0f / Screen.width)/*est hex screen space size sq*/)
+      //check for flip tile
       {
-        m_targetSlice = ((Mathf.FloorToInt(targetAngleCW) + 30) % 360) / 60;
-      }
 
-
-      if(m_currentSlice != m_targetSlice && !m_bRotate_CorRunning)
-      {
-        StartCoroutine(Rotate_Cor());
       }
 
       yield return null;
@@ -163,6 +159,14 @@ public class HexTileComp : MonoBehaviour
   private IEnumerator Rotate_Cor()
   {
     m_bRotate_CorRunning = true;
+
+    //play rotation sound
+    if (audioSource && !audioSource.isPlaying)
+    {
+      int index = Random.Range(0, m_rotateSounds.Length);
+      audioSource.pitch = .9f + (index % 3 * .1f);
+      audioSource.PlayOneShot(m_rotateSounds[index], .5f);
+    }
 
     float targetZAngleCW = (m_targetSlice * 60) % 360;
     float targetZAngleReal = -1 * (targetZAngleCW);
@@ -184,7 +188,7 @@ public class HexTileComp : MonoBehaviour
         rotDir = (int)Mathf.Sign((int)Vector3.Dot(hexRot2D, ZRotNormalVec));
       targetRotDelta = rotDir * Mathf.DeltaAngle(targetZAngleReal, currentAngleCW);
 
-      transform.Rotate(-Vector3.forward, targetRotDelta * .3f, Space.Self);
+      transform.Rotate(-Vector3.forward, targetRotDelta * m_rotateSpeed, Space.Self);
       m_currentSlice = ((Mathf.FloorToInt(currentAngleCW) + 30) % 360) / 60;
 
       yield return null;
@@ -196,14 +200,10 @@ public class HexTileComp : MonoBehaviour
       transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, targetZAngleReal);
       m_currentSlice = m_targetSlice;
 
-      //play rotation sound
-      if (!audioSource.isPlaying)
-      {
-        int index = Random.Range(0, m_rotateSounds.Length);
-        audioSource.pitch = .9f + (index % 3 * .1f);
-        audioSource.PlayOneShot(m_rotateSounds[index], .5f);
-      }
+      if(audioSource)
+        audioSource.PlayOneShot(m_endRotateSound);
     }
+
     m_bRotate_CorRunning = false;
   }
 
@@ -247,4 +247,6 @@ public class HexTileComp : MonoBehaviour
       audioSource.PlayOneShot(m_flipSounds[index], .5f);
     }
   }
+
+
 }

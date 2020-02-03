@@ -28,7 +28,7 @@ public class EnemySpawnManagerComp : MonoBehaviour
     s_done = false; //static state, need to reinstate this after this spawns
     BugEnemyComp.s_totalEnemiesAlive = 0;
 
-    m_timeToNextSpawn = m_spawnFrequencySec;
+    m_timeToNextSpawn = m_spawnFrequencySec * 5;
     m_currentSet = 0;
     //m_currentSpawner = Random.Range(0, m_spawners.Length);
   }

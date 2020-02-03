@@ -3145,7 +3145,7 @@ MonoBehaviour:
   m_root: {fileID: 1449219672}
   m_levels:
   - {fileID: 363261476}
-  - {fileID: 8027325901224119029, guid: 9db2846973ddb3d439cb223e52f19e80, type: 3}
+  - {fileID: 1514647864766217125, guid: 9743a764c742ff14dbed756e81c393c3, type: 3}
   - {fileID: 1514647864766217125, guid: 9743a764c742ff14dbed756e81c393c3, type: 3}
   - {fileID: 8502771782403321456, guid: 32cf75fd9885f39418f450cea4f90411, type: 3}
   - {fileID: 703963075143434373, guid: 479244352261ccf4b9e41238a5925aa9, type: 3}
@@ -3752,6 +3752,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0.836
       objectReference: {fileID: 0}
+    - target: {fileID: 833382382909392342, guid: 479244352261ccf4b9e41238a5925aa9,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.36
+      objectReference: {fileID: 0}
+    - target: {fileID: 691250954258266145, guid: 479244352261ccf4b9e41238a5925aa9,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31095451f4cd96340bff130e92abf091, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 479244352261ccf4b9e41238a5925aa9, type: 3}
 --- !u!1 &1991772243

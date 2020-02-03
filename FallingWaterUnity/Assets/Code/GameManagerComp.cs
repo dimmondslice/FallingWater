@@ -66,7 +66,7 @@ public class GameManagerComp : MonoBehaviour
 
     bool bothPressed = (leftClickDown && rightClickHeld) || (rightClickPressed && leftClickHeld);
 
-    if (leftClickDown) //|| rightClickPressed || spaceClicked) //always do ray if any mouse was clicked
+    if (leftClickDown || rightClickPressed) //|| rightClickPressed || spaceClicked) //always do ray if any mouse was clicked
     {
       Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition, Camera.MonoOrStereoscopicEye.Mono);
       RaycastHit[] hits = new RaycastHit[5];
@@ -80,7 +80,7 @@ public class GameManagerComp : MonoBehaviour
           if (hex)
           {
             //resolve for doubleclick first
-            if (bothPressed  || spaceClicked)
+            if (rightClickPressed)
             {
               hex.FlipTile();
             }
