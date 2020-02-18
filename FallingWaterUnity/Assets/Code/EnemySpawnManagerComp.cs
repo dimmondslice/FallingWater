@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemySpawnManagerComp : MonoBehaviour
 {
-  public GameObject m_enemyPrefab;
+  public GameObject[] m_enemyPrefabs;
   public Transform[] m_spawners;
   public float m_spawnFrequencySec;
   public SpawnSet[] m_sets;
@@ -14,6 +14,8 @@ public class EnemySpawnManagerComp : MonoBehaviour
   private float m_timeToNextSpawn;
 
   public static bool s_done = false;
+
+  private GameObject m_currentBugType;
 
   [System.Serializable]
   public struct SpawnSet
@@ -31,6 +33,7 @@ public class EnemySpawnManagerComp : MonoBehaviour
     m_timeToNextSpawn = m_spawnFrequencySec * 5;
     m_currentSet = 0;
     //m_currentSpawner = Random.Range(0, m_spawners.Length);
+    m_currentBugType = m_enemyPrefabs[Random.Range(0, m_enemyPrefabs.Length - 1)];
   }
 
   void Update()
@@ -44,14 +47,17 @@ public class EnemySpawnManagerComp : MonoBehaviour
     {
       Transform spawner = m_sets[m_currentSet].spawner; //m_spawners[m_currentSpawner].transform;
       BugEnemyComp.s_totalEnemiesAlive++;
-      GameObject freshy = Instantiate(m_enemyPrefab, spawner.position, spawner.rotation, spawner);
-      freshy.GetComponent<BugEnemyComp>().m_nextDir = m_currentSpawnSetIndex % 2 == 0 ? -1 : 1; //alternate which side of the hexes the enemies prefer
+      GameObject freshy = Instantiate(m_currentBugType, spawner.position, spawner.rotation, spawner);
+      int leftorRight = m_currentSpawnSetIndex % 2 == 0 ? -1 : 1;
+      freshy.GetComponent<BugEnemyComp>().SetNextDirection(leftorRight); //alternate which side of the hexes the enemies prefer
 
       m_currentSpawnSetIndex++;
 
       if (m_currentSpawnSetIndex >= m_sets[m_currentSet].numEnemies)
       {
         m_currentSet++; //m_currentSpawner = Random.Range(0, m_spawners.Length);
+
+        m_currentBugType = m_enemyPrefabs[Random.Range(0, m_enemyPrefabs.Length)];
         if (m_currentSet >= m_sets.Length)
         {
           s_done = true;

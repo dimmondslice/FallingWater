@@ -9,7 +9,7 @@ public class BugEnemyComp : MonoBehaviour
   public float m_maxVelocity;
   public float m_moveForce;
   public int m_health;
-  public int m_nextDir = 1;
+  public EMovementType m_movementType;
   public float m_legStrideLength;
   public int m_legspeed;
   public int m_numFlashFrames;
@@ -23,8 +23,16 @@ public class BugEnemyComp : MonoBehaviour
   private Rigidbody m_rigid;
   private float m_initalXPos;
   private int m_maxHealth;
+  private int m_nextDir = 1;
 
   private bool m_bDamageFlashCorRunning = false;
+
+  public enum EMovementType
+  {
+    left = -1,
+    center = 0,
+    right = 1
+  };
 
   //---------------------------------------------------------------------------------------------------------------------
   public void Kill()
@@ -42,6 +50,9 @@ public class BugEnemyComp : MonoBehaviour
 
     m_maxHealth = m_health;
 
+    if(m_movementType != EMovementType.center)
+      m_nextDir = (int)m_movementType;
+
     m_initalLocalLegRot = new Quaternion[m_legs.Length];
     m_initalLocalLegPos = new Vector3[m_legs.Length];
     for(int i = 0; i < m_legs.Length; ++i)
@@ -52,24 +63,18 @@ public class BugEnemyComp : MonoBehaviour
   }
 
   //---------------------------------------------------------------------------------------------------------------------
+  public void SetNextDirection(int sign)
+  {
+    if (m_movementType == EMovementType.center)
+    {
+      m_nextDir = sign;
+    }
+  }
+
+  //---------------------------------------------------------------------------------------------------------------------
   private void FixedUpdate()
   {
-    Vector3 force = (m_moveForce * transform.up) ;
-
-    float xDelta = m_initalXPos - transform.position.x;
-    if (Mathf.Abs(xDelta) > 0.1f)
-    {
-      force += transform.right * xDelta * 1.25f;
-    }
-    force += transform.forward * .5f; //magnetize bug to ground kinda
-
-    m_rigid.AddForce(force);
-    Debug.DrawRay(transform.position, force, Color.green);
-
-    if(m_rigid.velocity.magnitude > m_maxVelocity)
-    {
-      m_rigid.velocity = m_rigid.velocity.normalized * m_maxVelocity;
-    }
+    Movement();
 
     //leg visual update
     for (int i = 0; i < m_legs.Length; ++i)
@@ -77,6 +82,37 @@ public class BugEnemyComp : MonoBehaviour
       int upOrDown = (int)Mathf.Sign((i % 3) - 2 + (i % 3)); 
       m_legs[i].localPosition = m_initalLocalLegPos[i] + Vector3.forward * (Mathf.Sin(Time.fixedTime * m_legspeed) * upOrDown * m_legStrideLength);
     }
+  }
+
+  //---------------------------------------------------------------------------------------------------------------------
+  private void Movement()
+  {
+    Vector3 force = (m_moveForce * transform.up);
+    switch(m_movementType)
+    {
+      case EMovementType.center:
+      {
+        float xDelta = m_initalXPos - transform.position.x;
+        if (Mathf.Abs(xDelta) > 0.1f)
+        {
+          force += transform.right * xDelta * 1.25f;
+        }
+        force += transform.forward * .5f; //magnetize bug to ground kinda
+      } break;
+      case EMovementType.left:
+      case EMovementType.right:
+        force += m_moveForce * transform.right * (int)m_movementType;
+        break;     
+    }
+
+    //constrain movement to max velocity
+    if (m_rigid.velocity.magnitude > m_maxVelocity)
+    {
+      m_rigid.velocity = m_rigid.velocity.normalized * m_maxVelocity;
+    }
+
+    m_rigid.AddForce(force);
+    Debug.DrawRay(transform.position, force, Color.green);
   }
 
   //---------------------------------------------------------------------------------------------------------------------
@@ -119,7 +155,7 @@ public class BugEnemyComp : MonoBehaviour
   //---------------------------------------------------------------------------------------------------------------------
   private void OnTriggerExit(Collider other)
   {
-    if (other.gameObject.layer == 8)
+    if (other.gameObject.layer == 8 && m_movementType == EMovementType.center)
     {
       m_nextDir *= -1;
     }
