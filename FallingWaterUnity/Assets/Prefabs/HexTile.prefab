@@ -215,6 +215,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -433,6 +434,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -514,6 +516,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -621,6 +624,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -768,6 +772,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -799,11 +804,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4797090878822534}
     m_Modifications:
-    - target: {fileID: 671311703093186447, guid: a64929643246db7409228cc7bb1243cd,
-        type: 3}
-      propertyPath: m_Name
-      value: TurnSignal
-      objectReference: {fileID: 0}
     - target: {fileID: 671311703093186446, guid: a64929643246db7409228cc7bb1243cd,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -857,6 +857,16 @@ PrefabInstance:
     - target: {fileID: 671311703093186446, guid: a64929643246db7409228cc7bb1243cd,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 671311703093186447, guid: a64929643246db7409228cc7bb1243cd,
+        type: 3}
+      propertyPath: m_Name
+      value: TurnSignal
+      objectReference: {fileID: 0}
+    - target: {fileID: 671311703093186447, guid: a64929643246db7409228cc7bb1243cd,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
