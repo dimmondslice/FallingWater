@@ -30,6 +30,11 @@ public class HexGridComp : MonoBehaviour
         DestroyImmediate(rChild.gameObject);
       }
     }
+    //create container children
+    GameObject tilesGO = Instantiate<GameObject>(new GameObject(), transform);
+    tilesGO.name = "Tiles";
+    GameObject navGraphGO = Instantiate<GameObject>(new GameObject(), transform);
+    navGraphGO.name = "NavGraph";
 
     //Start tile placement such that hexgrid transform is the top center of the grid
     float startingXPos = -1.0f * m_DistApart * (int)(m_gridWidth / 2) + ((m_gridWidth + 1) % 2 ) * m_DistApart / 2.0f;
@@ -42,15 +47,15 @@ public class HexGridComp : MonoBehaviour
       for (int j = 0; j < m_gridWidth - oddRowMinusOne; ++j)
       {
         //spawn hex and top/bottom NavVerts
-        GameObject rNewHex = Instantiate(m_hexPrefab, transform);
+        GameObject rNewHex = Instantiate(m_hexPrefab, tilesGO.transform);
         rNewHex.transform.localPosition = currentSpawnPos;
         rNewHex.transform.localRotation = spawnRot;
 
-        GameObject rTopNavVert = Instantiate(m_navVertPrefab, transform);
+        GameObject rTopNavVert = Instantiate(m_navVertPrefab, navGraphGO.transform);
         rTopNavVert.transform.localPosition = currentSpawnPos + new Vector3(0, (2.0f/3.0f) * hexTriangleHeight, 0); //new Vector3(0, (hexTriangleHeight) / 2.0f, 0);
         rTopNavVert.layer = 12;
 
-        GameObject rBottomNavVert = Instantiate(m_navVertPrefab, transform);
+        GameObject rBottomNavVert = Instantiate(m_navVertPrefab, navGraphGO.transform);
         rBottomNavVert.transform.localPosition = currentSpawnPos - new Vector3(0, (2.0f / 3.0f) * hexTriangleHeight, 0);//new Vector3(0, (hexTriangleHeight) / 2.0f, 0);
         rBottomNavVert.layer = 13;
 

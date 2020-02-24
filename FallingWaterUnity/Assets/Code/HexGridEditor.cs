@@ -37,9 +37,9 @@ public class HexGridEditor : Editor
   */
     DrawDefaultInspector();
 
-    HexGridComp rHexGrid = (HexGridComp)target;
     if(GUILayout.Button("Generate Hex Grid"))
     {
+      HexGridComp rHexGrid = (HexGridComp)target;
       rHexGrid.Generate();
       rHexGrid.GenerateNavGraph();
     }

@@ -62,9 +62,9 @@ public class HexTileComp : MonoBehaviour
     }
     //randomly enable nub
     onOff = Random.Range(0, 4);
-    if (m_ControlNub && !m_ControlNub.activeInHierarchy && GameManagerComp.m_currentLevelIndex == 4)
+    //if (m_ControlNub && !m_ControlNub.activeInHierarchy && GameManagerComp.m_currentLevelIndex == 4)
     {
-      //m_nub.SetActive(onOff == 0);
+      m_ControlNub.SetActive(onOff == 0);
     }
   }
 
@@ -267,6 +267,7 @@ public class HexTileComp : MonoBehaviour
 
   private IEnumerator FlipTile_Cor()
   {
+    //Debug.Break();
     //make sure to reposition turn signal
     Vector3 hexSpaceRelativePos = m_turnSignal.position - transform.position;
     Vector3 oldPositionThisHex = transform.position;
@@ -276,12 +277,13 @@ public class HexTileComp : MonoBehaviour
     flipAxis = Vector3.Cross(flipAxis, -m_flipPartner.forward);
 
     //slide hex around ring
-    Vector3 center = ((m_flipPartner.position - transform.position) / 2) + transform.position;
+    Vector3 center = ((m_flipPartner.position - transform.position) / 2.0f) + transform.position;
     Vector3 orthogonalRotateAxis = new Vector3(center.y, -center.x);
-    //while (Vector3.Distance(transform.position, m_flipPartner.position) > .25f)
-    while(Vector3.SignedAngle(transform.position - center, m_flipPartner.position - center, orthogonalRotateAxis) > 0)
-    {
+    int rotateDir = (int)Mathf.Sign(Vector3.Dot(orthogonalRotateAxis, transform.position - center));
+    orthogonalRotateAxis *= rotateDir;
 
+    while (Vector3.SignedAngle(transform.position - center, m_flipPartner.position - center, orthogonalRotateAxis) > 0)
+    {
       transform.RotateAround(center, orthogonalRotateAxis, 3);
       yield return null;
     }

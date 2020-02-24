@@ -27,6 +27,8 @@ public class BugEnemyComp : MonoBehaviour
 
   private bool m_bDamageFlashCorRunning = false;
 
+  private Vector3 m_goalMoveDir;
+
   public enum EMovementType
   {
     left = -1,
@@ -49,6 +51,8 @@ public class BugEnemyComp : MonoBehaviour
     m_initalXPos = transform.position.x;
 
     m_maxHealth = m_health;
+
+    m_goalMoveDir = transform.up;
 
     if(m_movementType != EMovementType.center)
       m_nextDir = (int)m_movementType;
@@ -87,32 +91,34 @@ public class BugEnemyComp : MonoBehaviour
   //---------------------------------------------------------------------------------------------------------------------
   private void Movement()
   {
-    Vector3 force = (m_moveForce * transform.up);
-    switch(m_movementType)
-    {
-      case EMovementType.center:
-      {
-        float xDelta = m_initalXPos - transform.position.x;
-        if (Mathf.Abs(xDelta) > 0.1f)
-        {
-          force += transform.right * xDelta * 1.25f;
-        }
-        force += transform.forward * .5f; //magnetize bug to ground kinda
-      } break;
-      case EMovementType.left:
-      case EMovementType.right:
-        force += m_moveForce * transform.right * (int)m_movementType;
-        break;     
-    }
+    Vector3 force = m_moveForce * m_goalMoveDir;
+    //switch(m_movementType)
+    //{
+    //  case EMovementType.center:
+    //  {
+    //    float xDelta = m_initalXPos - transform.position.x;
+    //    if (Mathf.Abs(xDelta) > 0.1f)
+    //    {
+    //      force += transform.right * xDelta * 1.25f;
+    //    }
+    //    force += transform.forward * .5f; //magnetize bug to ground kinda
+    //  } break;
+    //  case EMovementType.left:
+    //  case EMovementType.right:
+    //    force += m_moveForce * transform.right * (int)m_movementType;
+    //    break;     
+    //}
+
+
+    m_rigid.AddForce(force);
+    //m_rigid.velocity = force;
+    Debug.DrawRay(transform.position, force, Color.green);
 
     //constrain movement to max velocity
     if (m_rigid.velocity.magnitude > m_maxVelocity)
     {
       m_rigid.velocity = m_rigid.velocity.normalized * m_maxVelocity;
     }
-
-    m_rigid.AddForce(force);
-    Debug.DrawRay(transform.position, force, Color.green);
   }
 
   //---------------------------------------------------------------------------------------------------------------------
@@ -150,16 +156,30 @@ public class BugEnemyComp : MonoBehaviour
     {
       m_meshTrans.localPosition = new Vector3(0.0f, 0.0f, -.25f);
     }
+    else if (other.gameObject.layer == 12) //Top NavVert
+    {
+      m_goalMoveDir = transform.up;
+
+    }
+    else if (other.gameObject.layer == 13) //bottomNavVert
+    {
+      if (m_movementType == EMovementType.center)
+      {
+        m_nextDir *= -1;
+      }
+
+      //m_goalMoveDir = Mathf.Sin(30 * Mathf.Deg2Rad) * transform.up + (transform.right * Mathf.Cos(60 * Mathf.Deg2Rad) * m_nextDir);
+      // m_goalMoveDir = transform.InverseTransformDirection(Mathf.Sin(60 * Mathf.Deg2Rad) * Vector3.up + m_nextDir * Mathf.Cos(60 * Mathf.Deg2Rad) * Vector3.right);
+      //m_rigid.velocity *= new Vector3();
+
+      m_goalMoveDir = transform.up + (transform.right * m_nextDir);
+    }
   }
 
   //---------------------------------------------------------------------------------------------------------------------
   private void OnTriggerExit(Collider other)
   {
-    if (other.gameObject.layer == 8 && m_movementType == EMovementType.center)
-    {
-      m_nextDir *= -1;
-    }
-    else if (other.gameObject.layer == 11) //nub trigger
+    if (other.gameObject.layer == 11) //nub trigger
     {
       m_meshTrans.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
     }
@@ -171,7 +191,7 @@ public class BugEnemyComp : MonoBehaviour
     if(other.gameObject.layer == 8) //turnSignal layer
     {
       Vector3 force = (transform.right * (4f * m_nextDir)) + (transform.up * (-.0f));
-      m_rigid.AddForce(force);
+      //m_rigid.AddForce(force);
     }
   }
 

@@ -790,9 +790,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_maxVelocity: 2
   m_moveForce: 3
-  m_health: 100
+  m_health: 130
   m_movementType: 0
-  m_legStrideLength: 0.15
+  m_legStrideLength: 0.17
   m_legspeed: 30
   m_numFlashFrames: 3
   m_meshTrans: {fileID: 7983723488461032916}
