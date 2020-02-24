@@ -82,6 +82,25 @@ public class HexGridComp : MonoBehaviour
         currentSpawnPos.x = startingXPos + ((i + 1) % 2) * hexTriangleHeight; //offset every other row
       }
     }
+
+    //add one more final row, but only the top nav points, so bugs can ai properly at the bottom
+    int finalOddRowMinusOne = (m_gridHeight % 2);
+    for (int i = 0; i < m_gridWidth - finalOddRowMinusOne; ++i)
+    {
+      GameObject rTopNavVert = Instantiate(m_navVertPrefab, navGraphGO.transform);
+      rTopNavVert.transform.localPosition = currentSpawnPos + new Vector3(0, (2.0f / 3.0f) * hexTriangleHeight, 0);
+      rTopNavVert.layer = 12;
+
+      //set spawn location for next tile in this row
+      if (m_tileOrientation == ETileOrientation.vertical)
+      {
+        currentSpawnPos.x += m_DistApart;
+      }
+      else if (m_tileOrientation == ETileOrientation.horizontal)
+      {
+        currentSpawnPos.x += m_DistApart * Mathf.Sqrt(3);
+      }
+    }
   }
 
   public void GenerateNavGraph()
