@@ -37,12 +37,16 @@ public class HexGridEditor : Editor
   */
     DrawDefaultInspector();
 
-    if(GUILayout.Button("Generate Hex Grid"))
+    if (GUILayout.Button("Generate Hex Grid"))
     {
       HexGridComp rHexGrid = (HexGridComp)target;
       rHexGrid.Generate();
       rHexGrid.GenerateNavGraph();
     }
+    if (GUILayout.Button("Re-Generate NavGraph"))
+    {
+      HexGridComp rHexGrid = (HexGridComp)target;
+      rHexGrid.GenerateNavGraph();
+    }
   }
-
 }
