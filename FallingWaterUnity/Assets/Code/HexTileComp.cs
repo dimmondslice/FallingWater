@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[SelectionBase]
 public class HexTileComp : MonoBehaviour
 {
   public Transform m_flipPartner;
@@ -64,7 +65,7 @@ public class HexTileComp : MonoBehaviour
     onOff = Random.Range(0, 4);
     //if (m_ControlNub && !m_ControlNub.activeInHierarchy && GameManagerComp.m_currentLevelIndex == 4)
     {
-      m_ControlNub.SetActive(onOff == 0);
+      //m_ControlNub.SetActive(onOff == 0);
     }
   }
 

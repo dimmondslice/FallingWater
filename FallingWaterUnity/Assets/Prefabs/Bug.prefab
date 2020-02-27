@@ -790,7 +790,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_maxVelocity: 2
   m_moveForce: 3
-  m_health: 130
+  m_health: 115
   m_movementType: 0
   m_legStrideLength: 0.17
   m_legspeed: 30
